@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart Jatra E-Auto Booking</title>
+
+<style>
+:root{
+  --sky:#87CEEB;
+  --green:#2ecc71;
+  --navy:#0b2c55;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(135deg,var(--sky),var(--green));
+  color:var(--navy);
+}
+
+/* Header */
+header{
+  background:white;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+
+/* Card */
+.container{
+  max-width:500px;
+  margin:30px auto;
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+h2{
+  text-align:center;
+  margin-bottom:15px;
+}
+
+/* Form */
+input,select{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  width:100%;
+  padding:13px;
+  margin-top:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--green);
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+/* Payment Box */
+.payment-box{
+  background:#fff4a3;
+  padding:15px;
+  border-radius:10px;
+  margin:15px 0;
+  text-align:center;
+  font-weight:bold;
+}
+
+.qr{
+  width:170px;
+  margin-top:10px;
+  border-radius:10px;
+}
+
+/* Footer */
+footer{
+  text-align:center;
+  padding:15px;
+  font-size:14px;
+}
+.map-btn{
+  background:var(--navy);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+SMART JATRA E-AUTO SERVICE <br>
+📞 7478578232 / 9564681311 <br>
+✉ smartjatra@gmail.com
+</header>
+
+<div class="container">
+
+<h2>Advance Booking Form</h2>
+
+<form id="bookingForm">
+
+<input type="text" id="name" placeholder="Passenger Name" required>
+
+<input type="text" id="destination" placeholder="Destination" required>
+
+<input type="number" id="distance" placeholder="Distance (KM)" step="0.1" required>
+
+<select id="passengers" required>
+<option value="">Passengers</option>
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<input type="tel" id="mobile" placeholder="Verified Mobile Number" required pattern="[0-9]{10}">
+
+<label>Date</label>
+<input type="date" id="date" required>
+
+<label>Time</label>
+<input type="time" id="time" required>
+
+<div class="payment-box">
+💰 ৫০ টাকা অ্যাডভান্স বাধ্যতামূলক<br>
+Scan PhonePe QR & Pay
+<br>
+<img class="qr" src="https://i.ibb.co/N6dz7TZP/IMG-20260129-WA0016.jpg">
+</div>
+
+<input type="text" id="txn" placeholder="Transaction ID" required>
+
+<button type="submit">Confirm Booking</button>
+
+</form>
+
+<button class="map-btn" onclick="openMap()">📍 Pickup Location Map</button>
+
+</div>
+
+<footer>
+Contact: 7478578232 / 9564681311 | smartjatra@gmail.com
+</footer>
+
+<script>
+/* date restriction 1 week */
+const today = new Date();
+const maxDate = new Date();
+maxDate.setDate(today.getDate()+7);
+
+document.getElementById("date").min = today.toISOString().split("T")[0];
+document.getElementById("date").max = maxDate.toISOString().split("T")[0];
+
+document.getElementById("bookingForm").addEventListener("submit",function(e){
+e.preventDefault();
+
+const name=document.getElementById("name").value;
+const dest=document.getElementById("destination").value;
+const dist=parseFloat(document.getElementById("distance").value);
+const pass=document.getElementById("passengers").value;
+const mob=document.getElementById("mobile").value;
+const date=document.getElementById("date").value;
+const time=document.getElementById("time").value;
+const txn=document.getElementById("txn").value;
+
+/* distance check */
+if(dist<4.5){
+alert("❌ Only trips above 4.5 KM allowed for advance booking");
+return;
+}
+
+if(!confirm("Distance 4.5 KM এর বেশি কি?")){
+return;
+}
+
+/* location */
+navigator.geolocation.getCurrentPosition(function(pos){
+
+const lat=pos.coords.latitude;
+const lon=pos.coords.longitude;
+
+let msg =
+`SMART JATRA BOOKING\n
+Name: ${name}
+Mobile: ${mob}
+Destination: ${dest}
+Passengers: ${pass}
+Date: ${date}
+Time: ${time}
+Distance: ${dist} KM
+Transaction ID: ${txn}
+Location: https://maps.google.com/?q=${lat},${lon}
+
+Note: Customer confirmed distance > 4.5 KM`;
+
+let whatsapp = "https://wa.me/917478578232?text=" + encodeURIComponent(msg);
+let mail = "mailto:smartjatra@gmail.com?subject=New Booking&body=" + encodeURIComponent(msg);
+
+window.open(whatsapp,"_blank");
+window.location.href = mail;
+
+alert("Booking Sent Successfully!");
+
+});
+
+});
+
+/* pickup map */
+function openMap(){
+window.open("https://maps.google.com/?q=Smart+Jatra+Durgapur");
+}
+</script>
+
+</body>
+</html>
